@@ -50,7 +50,7 @@ wrap3=: {{)d
   ".'u=.',;y
   uinv=. u f. inv
   yinv=. fixlrep 5!:5<'uinv'
-  rank=. IMPLEMENTATION b. 0
+  rank=. u b. 0
   (nm)=: 3 :(id {{)n
     PROLOG3
     EPILOG IMPLEMENTATION y
@@ -80,8 +80,7 @@ wrap1=: {{
        r~
       case. 2 do. r=. 'IDc' wrap2 T
        r~
-      case. 3 do. r=. 'IDv' wrap3 T
-       r~
+      case. 3 do. 'IDv' wrap3 T
     end.
 }} fillinblanks y)
   nm
@@ -116,10 +115,10 @@ wrapA=: {{
 }}"0
 
 wrapeval=: {{
-  echo locale=. cocreate''
+  echo locale=. cocreate'' NB. until we have postmortem code, echo locale for developer to see
   coinsert__locale <'base'
   N__locale=: 0
-  Zsentence__locale=: wrapA__locale&.;:y
+  Zsentence__locale=: 'Zresult=: ',wrapA__locale&.;:y
   do__locale Zsentence__locale
   NB. postmortem
   NB. coerase locale
