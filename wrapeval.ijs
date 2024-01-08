@@ -1,5 +1,3 @@
-NB. insert definition of primitives here
-
 NB. we'll be generating a sequence of related names
 NB. this base id will be used to distinguish different sets of names
 genid=: {{ y,":N=: N+1}}
