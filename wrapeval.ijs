@@ -76,12 +76,9 @@ wrap1=: {{
     T=. <fixlrep '( ',') ',~5!:5<'t'
     select. nc<'t'
       case. 0 do. EPILOG t return.
-      case. 1 do. r=.'IDa' wrap1 T
-       r~
-      case. 2 do. r=. 'IDc' wrap2 T
-       r~
-      case. 3 do. r=. 'IDv' wrap3 T
-       r~
+      case. 1 do. 'IDa' wrap1 T
+      case. 2 do. 'IDc' wrap2 T
+      case. 3 do. 'IDv' wrap3 T
     end.
 }} fillinblanks y)
   nm
@@ -95,12 +92,9 @@ wrap2=: {{
     T=. <fixlrep'( ',') ',~5!:5<'t'
     select. nc<'t'
       case. 0 do. EPILOG t return.
-      case. 1 do. r=.'IDa' wrap1 T
-       r~
-      case. 2 do. r=. 'IDc' wrap2 T
-       r~
-      case. 3 do. r=. 'IDv' wrap3 T
-       r~
+      case. 1 do. 'IDa' wrap1 T
+      case. 2 do. 'IDc' wrap2 T
+      case. 3 do. 'IDv' wrap3 T
     end.
 }} fillinblanks y)
   nm
@@ -131,6 +125,3 @@ wrapeval=: {{
   Zresult__locale
   NB. coerase locale
 }}
-
-NB. J bug: remove the r=. and r~ bits from the wrap2 and wrap3 and try wrapeval '>:&.>i.2 2'
-
