@@ -152,5 +152,5 @@ wrapeval=: {{
   echo 'dissect ',quote y
   dissect__locale Zsentence__locale
   Zresult__locale
-  NB. coerase locale
+  NB. coerase locale NB. in principle this would need to happen on closing the window representing the postmortem
 }}
