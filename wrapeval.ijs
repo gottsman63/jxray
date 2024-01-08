@@ -122,7 +122,7 @@ wrap2=: {{
   nm
 }}
 
-NB. wrap "anything" 
+NB. wrap "anything" in a sentence
 NB. (but text representing nouns or punctuation does not get wrapped)
 wrapA=: {{
   select. ncp y
@@ -131,9 +131,9 @@ wrapA=: {{
     case. 3 do. <'' wrap3;y NB. verb
     case.   do. y
   end.
-}}"0
+}}
 
-require'debug/dissect'
+require'debug/dissect' NB. temporary hack
 
 NB. in a new locale:
 NB.   wrap the operations in a sentence
@@ -144,8 +144,11 @@ wrapeval=: {{
   echo locale=: cocreate'' NB. until we have postmortem code, echo locale for developer to see
   coinsert__locale <'base'
   N__locale=: 0
-  Zsentence__locale=: 'Zresult=: ',wrapA__locale&.;:y
-  do__locale Zsentence__locale
+  Zsentence__locale=: 'Zresult=: ',wrapA__locale"0&.;:y
+  NB. dissect will do this for us, no need to execute twice:
+  NB.   do__locale Zsentence__locale
+  NB. but bring back this do__locale line when replacing dissect with some other postmortem mechanism
+  NB.
   NB. postmortem
   NB. launching two dissects at the same time triggers a rendering bug in dissect
   NB. launching dissect from sys_timer_z_ can crash J
