@@ -80,7 +80,8 @@ wrap1=: {{
        r~
       case. 2 do. r=. 'IDc' wrap2 T
        r~
-      case. 3 do. 'IDv' wrap3 T
+      case. 3 do. r=. 'IDv' wrap3 T
+       r~
     end.
 }} fillinblanks y)
   nm
@@ -130,3 +131,6 @@ wrapeval=: {{
   Zresult__locale
   NB. coerase locale
 }}
+
+NB. J bug: remove the r=. and r~ bits from the wrap2 and wrap3 and try wrapeval '>:&.>i.2 2'
+
