@@ -122,11 +122,11 @@ wrapeval=: {{
   coinsert__locale <'base'
   N__locale=: 0
   Zsentence__locale=: 'Zresult=: ',wrapA__locale&.;:y
+  echo 'dissect_',locale,&":&;'_ Zsentence_',locale,&":&;'_'
   do__locale Zsentence__locale
   NB. postmortem
   NB. launching two dissects at the same time triggers a rendering bug in dissect
   NB. launching dissect from sys_timer_z_ can crash J
-  echo 'dissect_',locale,&":&;'_ Zsentence_',locale,&":&;'_'
   Zresult__locale
   NB. coerase locale
 }}
