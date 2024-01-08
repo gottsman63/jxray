@@ -5,7 +5,7 @@ genid=: {{ y,":N=: N+1}}
 NB. get the name given an id (from genid - maybe appended to something else)
 wrapnm=: {{ 'Z',y }} NB. y: id
 
-NB. 5!:5 almost serializes the the definition of a name
+NB. 5!:5 almost serializes the definition of a name
 NB. but it may give results which cannot be used in a sentence
 NB. fix that 
 NB. (and note that we'll be using it on local names, some of the time).
@@ -24,10 +24,10 @@ name2lrep=: ' (',') ',~{{
   end.
 }}@(5!:5)@boxopen
 
-NB. given a template of a definition,
-NB.   and the definition,
-NB.   and the id for the names to build
-NB.   build the text of that definition
+NB. given a template for wrapping a definition,
+NB.   and the text of the definition,
+NB.   and the id for the constructed names to use
+NB.   build the text of the wrapping (instrumentation) definition
 fillinblanks=: {{
   ID=. x
   TEMPLATE=. m
@@ -54,7 +54,7 @@ fillinblanks=: {{
   TEMPLATE rplc subst
 }}
 
-NB. get the name class which a primitive token would have if it were assigned to a name
+NB. get the name class which a primitive token would give, if it were assigned to a name
 ncp=: {{ try. nc<'t'[".'t=. ',;y catch. _2 end. }}"0
 
 NB. generate instrumentation wrapper for an arbitrary verb
