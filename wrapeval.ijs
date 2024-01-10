@@ -39,7 +39,7 @@ fillinblanks=: {{
   end.
   PROLOG=. {{)n
     SELFDISP=: DISPLAYTEXT
-    SELFTIME0=: SELFTIME0,6!:1''
+    SELFTIME0=: SELFTIME0,gettime	''
 }} rplc 'SELF';SELF;'DISPLAYTEXT';DISPLAYTEXT
   PROLOG3=. PROLOG,{{)n
   'SELFY';SELFY=:SELFY,<y
@@ -48,12 +48,19 @@ fillinblanks=: {{
   'SELFX'; SELFX=: SELFX,<x
 }} rplc 'SELF';SELF
   EPILOG=: LF-.~{{)n
-    {{y[SELFTIME1=: SELFTIME1,6!:1''[SELFHIST=: SELFHIST,<y}}
+    {{y[SELFTIME1=: SELFTIME1,gettime''[SELFHIST=: SELFHIST,<y}}
 }} rplc 'SELF';SELF
   subst=. 'SELF';SELF;'ID';ID;'IMPLEMENTATION';IMPLEMENTATION
   subst=. subst,'PROLOG4';PROLOG4;'PROLOG3';PROLOG3;'PROLOG';PROLOG
   subst=. subst,'EPILOG';EPILOG
   TEMPLATE rplc subst
+}}
+
+TIME=: 0
+gettime=: {{ NB. hack for imprecise 6!:1
+  time=. 6!:1''
+  if. time <:!.0 TIME do. time=. TIME+1e_7 end.
+  TIME=: time
 }}
 
 NB. get the name class which a primitive token would give, if it were assigned to a name
@@ -153,7 +160,7 @@ wrapeval=: {{
   coinsert__locale <'base'
   N__locale=: 0
   Zsentence__locale=: 'Zresult=: ',wrapA__locale"0&.;:y
-  NB. dissect will do this for us, no need to execute twice:
+  NB. dissect will do this for us twice, no need to execute a third time:
   NB.   do__locale Zsentence__locale
   NB. but bring back this do__locale line when replacing dissect with some other postmortem mechanism
   NB.
