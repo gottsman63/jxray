@@ -34,9 +34,11 @@ fillinblanks=: {{
   IMPLEMENTATION=. ;y
   DISPLAYTEXT=. quote;y
   SELF=. wrapnm ID
+  for_suffix.>;:'HAS HIST TIME0 TIME1 X Y' do.
+    (SELF,suffix)=: '' NB. for future use by wrapper being created
+  end.
   PROLOG=. {{)n
     SELFDISP=: DISPLAYTEXT
-    if.0>nc<'SELFHIST' do.SELFHIST=: SELFX=: SELFY=: SELFTIME0=: SELFTIME1=: '' end.
     SELFTIME0=: SELFTIME0,6!:1''
 }} rplc 'SELF';SELF;'DISPLAYTEXT';DISPLAYTEXT
   PROLOG3=. PROLOG,{{)n
@@ -95,11 +97,14 @@ wrap1=: {{
     T=. name2lrep 't'
     select. nc<'t'
       case. 0 do. EPILOG t return.
-      case. 1 do. ('IDa' wrap1 T)~
-      case. 2 do. ('IDc' wrap2 T)~
-      case. 3 do. ('IDv' wrap3 T)~
+      case. 1 do. name=. 'IDa' wrap1 T
+      case. 2 do. name=. 'IDc' wrap2 T
+      case. 3 do. name=. 'IDv' wrap3 T
     end.
+    SELFHAS=: SELFHAS,<name NB. remember name(s) of delegate(s)
+    name~
 }} fillinblanks y)
+  (nm,'HAS')=: ''
   nm
 }}
 
@@ -114,11 +119,14 @@ wrap2=: {{
     T=. name2lrep 't'
     select. nc<'t'
       case. 0 do. EPILOG t return.
-      case. 1 do. ('IDa' wrap1 T)~
-      case. 2 do. ('IDc' wrap2 T)~
-      case. 3 do. ('IDv' wrap3 T)~
+      case. 1 do. name=. 'IDa' wrap1 T
+      case. 2 do. name=. 'IDc' wrap2 T
+      case. 3 do. name=. 'IDv' wrap3 T
     end.
+    SELFHAS=: SELFHAS,<name NB. remember name(s) of delegate(s)
+    name~
 }} fillinblanks y)
+  (nm,'HAS')=: ''
   nm
 }}
 
