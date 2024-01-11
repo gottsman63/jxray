@@ -58,9 +58,7 @@ fillinblanks=: {{
 
 TIME=: 0
 gettime=: {{ NB. hack for imprecise 6!:1
-  time=. 6!:1''
-  if. time <:!.0 TIME do. time=. TIME+1e_7 end.
-  TIME=: time
+  TIME=: (6!:1'')>.TIME+1e_7
 }}
 
 NB. get the name class which a primitive token would give, if it were assigned to a name
