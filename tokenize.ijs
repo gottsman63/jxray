@@ -52,8 +52,6 @@ match=: {{
 }}
 
 kleenestar=: optf@repf
-anything=: kleenestar chf a.
-contained=: anything seqf anything seqf~ ]
 
 assert (disp chf'a')-:,L:0]0;<,:'';'a'
 assert (disp 'a' seqf&chf 'b')-:,L:0]0;<('';'a'),:'';'';'b'
