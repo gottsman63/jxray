@@ -45,8 +45,8 @@ NB. regular expression which also matches the empty string
 optf=: {{ (~.Ys,#Yt);<Yt ['Ys Yt'=.y }}
 match=: {{
   i=. i.#t ['s t'=. y
-  for_c. a.i.x do.
-    s=. ~.;c{"1 t#~ i e. s
+  for_ch. a.i.x do.
+    s=. ~.;ch{"1 t#~ i e. s
   end.
   (#t)e.s
 }}
@@ -66,8 +66,6 @@ assert -.'aaabb' match (repf optf chf 'a') seqf chf 'b'
 
 NB. end of content from essay
 NB. ------------------------------------------
-digit=: chf DIG=: '_','0' through '9'
-letter=: chf LET=: ('A' through 'Z'),'a' through 'z'
 
 OPCODES=: {{(y)=:i.#y}};:'TOKEN VECTOR WS COMMENT NUVOC NUVOCnoun NUVOCend'
 operation=: {{
@@ -76,16 +74,21 @@ operation=: {{
   op N{{~.(m<.y),(m e.y)#x}}L:0 y
 }}
 
+digit=: chf DIGI=: '_','0' through '9'
+letter=: chf LETT=: ('A' through 'Z'),'a' through 'z'
+quote=: chf ''''
+quoted=: repf quote seqf (kleenestar chf a.-.'''') seqf quote
+
 comment=: COMMENT operation stringf 'NB.'
-number=: VECTOR operation digit seqf kleenestar chf DIG,'.',LET
+number=: VECTOR operation digit seqf kleenestar chf DIGI,'.',LETT
 whitespace=: WS operation repf chf ' '
 nuvoc=: NUVOC operation stringf '{{'
 nuvocnoun=: NUVOCnoun operation stringf '{{)n'
 nuvocend=: NUVOCend operation stringf '}}'
-word=: letter seqf kleenestar chf DIG,LET
+word=: letter seqf kleenestar chf DIGI,LETT
 inflect=: kleenestar chf '.:'
 token=: TOKEN operation inflect seqf~ ('!' rangef '~') orf number orf word
-token=: token orf comment orf whitespace orf number
+token=: token orf comment orf whitespace orf number orf quoted
 token=: token orf nuvoc orf nuvocnoun orf nuvocend
 
 NB. repeatedly: find longest match as next token
@@ -103,8 +106,8 @@ tokenize=: token {{
     if. j=#y do.
       s=. ''
     else.
-      c=. a.i.j{y
-      s=. ~.;c{"1 t#~ i e. s
+      ch=. a.i.CH=.j{y
+      s=. ~.;ch{"1 t#~ i e. s
     end.
     if. 0=#s do.
       if. (mode=VECTOR)*opcode=TOKEN do. mode=. TOKEN end.
@@ -124,14 +127,30 @@ tokenize=: token {{
           r,<start}.y return.
         case. NUVOC do.
           if. NUVOC=opcode do.
-            mode=. NUVOC
-            stack=. stack, start,#r
+            if. j<lim do. NB. treat {{. sort of like { {. 
+              if. CH e. '.:' do. 
+                end=. end-1
+                opcode=. TOKEN
+              end.
+            end.
+            if. NUVOC=opcode do.
+              mode=. NUVOC
+              stack=. stack, start,#r
+            end.
           end.
         case. NUVOCnoun do.
           if. NUVOCnoun=opcode do.
-            mode=. NUVOCnoun
-            vecstart=. start
-            prevec=. #r
+            if. j<lim do. NB. treat }}. sort of like } }.
+              if. CH e. '.:' do. 
+                end=. end-1
+                opcode=. TOKEN
+              end.
+            end.
+            if. NUVOCnoun=opcode do.
+              mode=. NUVOCnoun
+              vecstart=. start
+              prevec=. #r
+            end.
           end.
         case. NUVOCend do.
           select. mode 
