@@ -76,8 +76,8 @@ operation=: {{
 
 digit=: chf DIGI=: '_','0' through '9'
 letter=: chf LETT=: ('A' through 'Z'),'a' through 'z'
-quote=: chf ''''
-quoted=: repf quote seqf (kleenestar chf a.-.'''') seqf quote
+quot=: chf ''''
+quoted=: repf quot seqf (kleenestar chf a.-.'''') seqf quot
 
 comment=: COMMENT operation stringf 'NB.'
 number=: VECTOR operation digit seqf kleenestar chf DIGI,'.',LETT
