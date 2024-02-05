@@ -87,25 +87,35 @@ NB. generate instrumentation wrapper for an arbitrary verb
 NB. y is the text of the verb's implementation
 NB. result is the name of the wrapped definition
 wrap3=: {{)d
-  nm=. wrapnm id=. genid x
+  wraplocale=. coname''
+  nm=. wrapnm id=. wraplocale genid x
   nminv=. wrapnm idinv=. id,'inv'
   ".'u=.',;y
   uinv=. u f. inv
   yinv=. name2lrep 'uinv'
   rank=. u b. 0
-  (nm)=: 3 :(id Zuserlocale fillinblanks {{)n
+  MONADef=:
+  DYADef=:
+  iMONADef=:
+  iDYADef=:
+  sep=: ':',LF
+  MONADef=: id Zuserlocale fillinblanks {{)n
     PROLOG3
     EPILOG IMPLEMENTATION y
-:
+}} y
+  DYADef=: id Zuserlocale fillinblanks {{)n
     PROLOG4
     EPILOG x IMPLEMENTATION y
-}} y) :. (3 :(idinv Zuserlocale fillinblanks {{)n
+}} y
+  iMONADef=: idinv Zuserlocale fillinblanks {{)n
     PROLOG3
     EPILOG IMPLEMENTATION y
-:
+}} yinv
+  iDYADef=: idinv Zuserlocale fillinblanks {{)n
     PROLOG4
     EPILOG x IMPLEMENTATION y
-}} yinv))"rank
+}} yinv
+  (nm)=: 3 :(MONADef,sep,DYADEF) :. (3 :(iMONADef,sep,iDYADef))"rank
   (nminv)=: nm~ inv
   nm
 }}
@@ -114,7 +124,8 @@ NB. generate instrumentation wrapper for an arbitrary adverb
 NB. y is the text of the adverb's implementation
 NB. result is the name of the wrapped definition
 wrap1=: {{
-  nm=. wrapnm id=. genid x
+  wraplocale=. coname''
+  nm=. wrapnm id=. wraplocale genid x
   (nm)=: 1 :(id Zuserlocale fillinblanks {{)n
     PROLOG
     t=. u IMPLEMENTATION
@@ -136,7 +147,8 @@ NB. generate instrumentation wrapper for an arbitrary conjunction
 NB. y is the text of the conjunction's implementation
 NB. result is the name of the wrapped definition
 wrap2=: {{
-  nm=. wrapnm id=. genid x
+  wraplocale=. coname''
+  nm=. wrapnm id=. wraplocale genid x
   (nm)=: 2 :(id Zuserlocale fillinblanks {{)n
     PROLOG
     t=. u IMPLEMENTATION v
@@ -174,14 +186,14 @@ NB.   and leave room for postmortem
 NB.   temporarily use dissect to sort of represent the postmortem process
 wrapeval=: {{
 NB. for interactive/dev use - prefer using dyad from code
-  echo }."1}:"1}.}:":'wrapeval locale ';' ',;locale=: cocreate''
-  coinsert__locale 'base'
-  locale wrapeval y
+  echo }."1}:"1}.}:":'wrapeval locale ';' ',;wraplocale=: cocreate''
+  coinsert__wraplocale 'base'
+  wraplocale wrapeval y
 :
-  locale=. x
-  N__locale=: 0
-  Zsentence__locale=: wrapA__locale"0&.;:y
-  do__locale 'Zresult=: ',Zsentence__locale
+  wraplocale=. x
+  Zn__wraplocale=: 0
+  Zsentence__wraplocale=: wrapA__wraplocale"0&.;:y
+  do__wraplocale 'Zresult=: ',Zsentence__wraplocale
 }}
 
 
