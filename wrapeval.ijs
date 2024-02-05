@@ -1,6 +1,8 @@
+cocurrent'watchj' NB. for development (wouldn't need for prod)
+
 NB. we'll be generating a sequence of related names
 NB. this base id will be used to distinguish different sets of names
-genid=: {{ y,":N=: N+1}}
+genid=: {{ y,":Zn__x=: Zn__x+1}}
 
 NB. get the name given an id (from genid - maybe appended to something else)
 wrapnm=: {{ 'Z',y }} NB. y: id
@@ -24,14 +26,29 @@ name2lrep=: ' (',') ',~{{
   end.
 }}@(5!:5)@boxopen
 
+NB. fix locale relative names in sentence y to be absolute names in locale x
+fiximplementation=: {{
+  LOCALE=. ;x
+  suffix=. '_',LOCALE,'_'
+  sentence=. ;:inv^:L. y
+  tokens=. tokenize sentence
+  names=. _2<nc tokens
+  iffy=. 2 <: +/ .=&'_'@> tokens
+  maybe=. '_'={:@>tokens
+  yeah=. +./@('__'&E.)@>tokens
+  fix=. names * -. yeah +. iffy*maybe
+  ;fix ,&suffix each@]^:["0 tokens
+}}
+
 NB. given a template for wrapping a definition,
 NB.   and the text of the definition,
 NB.   and the id for the constructed names to use
 NB.   build the text of the wrapping (instrumentation) definition
 fillinblanks=: {{
   ID=. x
-  TEMPLATE=. m
-  IMPLEMENTATION=. ;y
+  LOCALE=. m
+  TEMPLATE=. n
+  IMPLEMENTATION=. LOCALE fiximplementation ;y
   DISPLAYTEXT=. quote;y
   SELF=. wrapnm ID
   for_suffix.>;:'HAS HIST TIME0 TIME1 X Y' do.
@@ -61,8 +78,10 @@ gettime=: {{ NB. hack for imprecise 6!:1
   TIME=: (6!:1'')>.TIME+1e_7
 }}
 
+
 NB. get the name class which a primitive token would give, if it were assigned to a name
 ncp=: {{ try. nc<'t'[".'t=. ',;y catch. _2 end. }}"0
+
 
 NB. generate instrumentation wrapper for an arbitrary verb
 NB. y is the text of the verb's implementation
@@ -74,19 +93,19 @@ wrap3=: {{)d
   uinv=. u f. inv
   yinv=. name2lrep 'uinv'
   rank=. u b. 0
-  (nm)=: 3 :(id {{)n
+  (nm)=: 3 :(id Zuserlocale fillinblanks {{)n
     PROLOG3
     EPILOG IMPLEMENTATION y
 :
     PROLOG4
     EPILOG x IMPLEMENTATION y
-}} fillinblanks y) :. (3 :(idinv {{)n
+}} y) :. (3 :(idinv Zuserlocale fillinblanks {{)n
     PROLOG3
     EPILOG IMPLEMENTATION y
 :
     PROLOG4
     EPILOG x IMPLEMENTATION y
-}} fillinblanks yinv))"rank
+}} yinv))"rank
   (nminv)=: nm~ inv
   nm
 }}
@@ -96,7 +115,7 @@ NB. y is the text of the adverb's implementation
 NB. result is the name of the wrapped definition
 wrap1=: {{
   nm=. wrapnm id=. genid x
-  (nm)=: 1 :(id {{)n
+  (nm)=: 1 :(id Zuserlocale fillinblanks {{)n
     PROLOG
     t=. u IMPLEMENTATION
     T=. name2lrep 't'
@@ -108,7 +127,7 @@ wrap1=: {{
     end.
     SELFHAS=: SELFHAS,<name NB. remember name(s) of delegate(s)
     name~
-}} fillinblanks y)
+}} y)
   (nm,'HAS')=: ''
   nm
 }}
@@ -118,7 +137,7 @@ NB. y is the text of the conjunction's implementation
 NB. result is the name of the wrapped definition
 wrap2=: {{
   nm=. wrapnm id=. genid x
-  (nm)=: 2 :(id {{)n
+  (nm)=: 2 :(id Zuserlocale fillinblanks {{)n
     PROLOG
     t=. u IMPLEMENTATION v
     T=. name2lrep 't'
@@ -130,7 +149,7 @@ wrap2=: {{
     end.
     SELFHAS=: SELFHAS,<name NB. remember name(s) of delegate(s)
     name~
-}} fillinblanks y)
+}} y)
   (nm,'HAS')=: ''
   nm
 }}
@@ -146,7 +165,7 @@ wrapA=: {{
   end.
 }}
 
-require'debug/dissect' NB. temporary hack
+NB. require'debug/dissect' NB. temporary hack
 
 NB. in a new locale:
 NB.   wrap the operations in a sentence
@@ -154,19 +173,16 @@ NB.   execute the resulting sentence
 NB.   and leave room for postmortem
 NB.   temporarily use dissect to sort of represent the postmortem process
 wrapeval=: {{
-  echo locale=: cocreate'' NB. until we have postmortem code, echo locale for developer to see
-  coinsert__locale <'base'
+NB. for interactive/dev use - prefer using dyad from code
+  echo }."1}:"1}.}:":'wrapeval locale ';' ',;locale=: cocreate''
+  coinsert__locale 'base'
+  locale wrapeval y
+:
+  locale=. x
   N__locale=: 0
-  Zsentence__locale=: 'Zresult=: ',wrapA__locale"0&.;:y
-  NB. dissect will do this for us twice, no need to execute a third time:
-  NB.   do__locale Zsentence__locale
-  NB. but bring back this do__locale line when replacing dissect with some other postmortem mechanism
-  NB.
-  NB. postmortem
-  NB. launching two dissects at the same time triggers a rendering bug in dissect
-  NB. launching dissect from sys_timer_z_ can crash J
-  echo 'dissect ',quote y
-  dissect__locale Zsentence__locale
-  Zresult__locale
-  NB. coerase locale NB. in principle this would need to happen on closing the window representing the postmortem
+  Zsentence__locale=: wrapA__locale"0&.;:y
+  do__locale 'Zresult=: ',Zsentence__locale
 }}
+
+
+wrapeval_z_=: wrapeval_watchj_
