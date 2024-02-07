@@ -30,10 +30,10 @@ watch=: {{)v
   userlocale__w=: Zuserlocale__w=: u.'' NB. userlocale__w for backwards compatibility with jtrace
   Zn__w=: 0
   Zstack__w=: 4 2$mark;''
-  Ztokens__w=: tokenize Zsentence=: y
+  Ztokens__w=: tokenize Zsentence__w=: y
   coinsert__w 'watchj jtrace'
   Zqueue__w=: (mark;0;''),(class__w&.>,. (2 <\ 0 +/\@, #@>) ,.prespace__w&.>) Ztokens__w
-  while. nextstep__w'' do. end. NB. plan on eventually replacing this line with a timer/ui event
+  while. EMPTY-:nextstep__w'' do. end. NB. plan on eventually replacing this line with a timer/ui event
 }}
 
 NB. now that we have a definition, we can use that

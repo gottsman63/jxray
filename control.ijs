@@ -1,3 +1,7 @@
+checkstack=: {{
+  assert. (,0)-:~.#@$@>{."1 Zstack
+}}
+
 nextstep=: animate`plan`execute`move {{
 echo y
 echo Zstack
@@ -29,12 +33,12 @@ execute=: {{
 }}
 
 build_subexpression=: {{
-  action=. <(y{PTactions)-.":i.10
+  action=. (y{PTactions)-.L:0":i.10
   mask=. y{PTsubj
   show_subexpression elements=. mask#,4 _1{.Zstack
   if. action=<'Is' do. elements=. elements 1}~ <'=:' end.
   if. action e. ;:'Monad Dyad' do. elements=. elements _2}~ encall&.;:&.> _2{elements end.
-  if. -. action e. ;:'Is Paren' do. elements=. '( ',L:0"0 elements ,L:0"0 ' )' end.
+  if. -. action e. ;:'Is Paren' do. elements=. '( '&,@,&' )'L:0"0 elements end.
   'Zresult=:',;elements 
 }}
 
@@ -45,19 +49,26 @@ update_stack=: {{
   drop=. 1+y i:1
   keep=. y i.1
   representation=. 5!:6<'Zresult'
-  Zstack=: (keep{.Zstack),(type;representation),drop}.Zstack
+  Zstack=: (keep{.Zstack),(type;(<'FIXME update_stack');representation),drop}.Zstack
+  checkstack''
 }}
 
 move=: {{
-  'class loc val'=. {:Zqueue
-  isasgn=. asgn=0 0{::Zstack
-  if. asgn+.name-:class do.
-    Zstack=: ({:Zqueue),Zstack
+  if. #Zqueue do.
+    'class loc val'=. {:Zqueue
+    isasgn=. asgn=0 0{::Zstack
+    if. asgn+.name-:class do.
+      Zstack=: ({:Zqueue),Zstack
+      checkstack''
+    else.
+      class=. (nc__userlocale <val){noun,adv,conj,verb
+      if. verb~:class do. val=. 5!:5<'val' end.
+      Zstack=. (class;loc;val),Zstack
+      checkstack''
+    end.
+    Zqueue=: }: Zqueue
+    1
   else.
-    class=. (nc__userlocale <val){noun,adv,conj,verb
-    if. verb~:class do. val=. 5!:5<'val' end.
-    Zstack=. (class;loc;val),Zstack
+    0
   end.
-  Zqueue=: }: Zqueue
-  1
 }}

@@ -192,7 +192,16 @@ NB. for interactive/dev use - prefer using dyad from code
 :
   wraplocale=. x
   Zn__wraplocale=: 0
-  Zsentence__wraplocale=: wrapA__wraplocale"0&.;:y
+  tokes=. tokenize y
+  mask=. tokes e.'=:';'=.'
+  names=. _1<:nc tokes
+  varmask=. names*}.mask,0
+  for_i.I.varmask do. NB. weakness here, if name was quoted
+    name=. i{tokes
+    varmask=. 1 (i<.I. tokes e. name)} varmask
+  end.
+  wrapmask=. varmask<_1<:nc tokes NB. token names which must be predefined
+  Zsentence__wraplocale=: ;wrapmask wrapA__wraplocale@]^:["0 tokes
   do__wraplocale 'Zresult=: ',Zsentence__wraplocale
 }}
 
