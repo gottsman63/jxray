@@ -14,6 +14,7 @@ animate=: {{
 }}
 
 plan=: {{
+NB.   show_plan 
   0
 }}
 
