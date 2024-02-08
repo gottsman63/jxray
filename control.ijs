@@ -3,10 +3,7 @@ checkstack=: {{
 }}
 
 nextstep=: animate`plan`execute`move {{
-echo y
-echo Zstack
   for_f. m do.
-    echo f
     if. f`:6 y do. EMPTY return. end.
   end.
   'done'
