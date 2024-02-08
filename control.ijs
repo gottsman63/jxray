@@ -25,7 +25,7 @@ execute=: {{
   show_pattern Zndx=. 1 1 1 1 i.~ * PTpatterns bwand"1 ,>4 1{.Zstack
   if. Zndx <#PTpatterns do.
     show_mask Zmask=. Zndx{PTsubj
-    (coname'') wrapeval build_subexpression Zndx NB. FIXME (need both wraplocale and userlocale and this currently gets both wrong)
+    (coname'') wrapeval build_subexpression Zndx
     update_stack Zmask
   else.
     0
@@ -49,7 +49,8 @@ update_stack=: {{
   drop=. 1+y i:1
   keep=. y i.1
   representation=. 5!:6<'Zresult'
-  Zstack=: (keep{.Zstack),(type;(<'FIXME update_stack');representation),drop}.Zstack
+  span=: (<./,>./);(<1,.~I.y){Zstack
+  Zstack=: (keep{.Zstack),(type;span;representation),drop}.Zstack
   checkstack''
 }}
 
