@@ -94,28 +94,21 @@ wrap3=: {{)d
   uinv=. u f. inv
   yinv=. name2lrep 'uinv'
   rank=. u b. 0
-  MONADef=:
-  DYADef=:
-  iMONADef=:
-  iDYADef=:
   sep=: ':',LF
-  MONADef=: id Zuserlocale fillinblanks {{)n
+  Def=: id Zuserlocale fillinblanks {{)n
     PROLOG3
     EPILOG IMPLEMENTATION y
-}} y
-  DYADef=: id Zuserlocale fillinblanks {{)n
+:
     PROLOG4
     EPILOG x IMPLEMENTATION y
 }} y
-  iMONADef=: idinv Zuserlocale fillinblanks {{)n
+  iDef=: idinv Zuserlocale fillinblanks {{)n
     PROLOG3
     EPILOG IMPLEMENTATION y
-}} yinv
-  iDYADef=: idinv Zuserlocale fillinblanks {{)n
     PROLOG4
     EPILOG x IMPLEMENTATION y
 }} yinv
-  (nm)=: 3 :(MONADef,sep,DYADEF) :. (3 :(iMONADef,sep,iDYADef))"rank
+  (nm)=: 3 :Def :. (3 :iDef)s"rank
   (nminv)=: nm~ inv
   nm
 }}
@@ -200,7 +193,7 @@ NB. for interactive/dev use - prefer using dyad from code
     name=. i{tokes
     varmask=. 1 (i<.I. tokes e. name)} varmask
   end.
-  wrapmask=. varmask<_1<:nc tokes NB. token names which must be predefined
+  wrapmask=. -.varmask NB. token names which must be predefined
   Zsentence__wraplocale=: ;wrapmask wrapA__wraplocale@]^:["0 tokes
   do__wraplocale 'Zresult=: ',Zsentence__wraplocale
 }}
