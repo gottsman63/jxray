@@ -95,6 +95,8 @@ NB. repeatedly: find longest match as next token
 NB. (with special operations for certain kinds of tokens)
 NB. ((hopefully there's a more elegant way of doing this...))
 tokenize=: token {{
+  assert. 1e5>#y
+  echo 'tokenize (#',(":#y),') ',Y_base_=: y
   lim=. <:#y
   i=. i.#t['s t'=. m
   N=. #t [ S=. s
@@ -103,6 +105,7 @@ tokenize=: token {{
   stack=. EMPTY
   r=. i.prevec=. start=. j=. 0
   while. j<:#y do.
+    assert. (2>#r) +. -. ('';'') -: _2{.r 
     if. j=#y do.
       s=. ''
     else.

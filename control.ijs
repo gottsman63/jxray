@@ -35,7 +35,6 @@ build_subexpression=: {{
   mask=. y{PTsubj
   show_subexpression elements=. mask#,4 _1{.Zstack
   if. action=<'Is' do. elements=. elements 1}~ <'=:' end.
-  if. action e. ;:'Monad Dyad' do. elements=. elements _2}~ encall&.;:&.> _2{elements end.
   if. -. action e. ;:'Is Paren' do. elements=. '( '&,@,&' )'L:0"0 elements end.
   'Zresult=:',;elements 
 }}

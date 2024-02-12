@@ -59,10 +59,10 @@ fillinblanks=: {{
     SELFTIME0=: SELFTIME0,gettime	''
 }} rplc 'SELF';SELF;'DISPLAYTEXT';DISPLAYTEXT
   PROLOG3=. PROLOG,{{)n
-  'SELFY';SELFY=:SELF,<y
+  'SELFY';SELFY=:SELFY,<y
 }} rplc 'SELF';SELF
   PROLOG4=. PROLOG3,{{)n
-  'SELFX'; SELFX=: SELF,<x
+  'SELFX'; SELFX=: SELFX,<x
 }} rplc 'SELF';SELF
   EPILOG=: LF-.~{{)n
     {{y[SELFTIME1=: SELFTIME1,gettime''[SELFHIST=: SELFHIST,<y}}
@@ -91,7 +91,7 @@ wrap3=: {{)d
   nm=. wrapnm id=. wraplocale genid x
   nminv=. wrapnm idinv=. id,'inv'
   ".'u=.',;y
-  uinv=. u f. inv
+  uinv=. u inv NB. the name u is special and is dereferenced here
   yinv=. name2lrep 'uinv'
   rank=. u b. 0
   sep=: ':',LF
@@ -111,7 +111,7 @@ wrap3=: {{)d
 }} yinv
   (nm)=: 3 : Def :. (3 :iDef)"rank
   (nminv)=: nm~ inv
-  nm
+  nm,'_',(;coname''),'_'
 }}
 
 NB. generate instrumentation wrapper for an arbitrary adverb
@@ -134,7 +134,7 @@ wrap1=: {{
     name~
 }} y)
   (nm,'HAS')=: ''
-  nm
+  nm,'_',(;coname''),'_'
 }}
 
 NB. generate instrumentation wrapper for an arbitrary conjunction
@@ -157,12 +157,14 @@ wrap2=: {{
     name~
 }} y)
   (nm,'HAS')=: ''
-  nm
+  nm,'_',(;coname''),'_'
 }}
 
 NB. wrap "anything" in a sentence
 NB. (but text representing nouns or punctuation does not get wrapped)
 wrapA=: {{
+  suffix=. '_',(;coname''),'_'
+  if. suffix-:(#suffix){.y do. y return. end.
   select. ncp y
     case. 1 do. <'' wrap1;y NB. adverb
     case. 2 do. <'' wrap2;y NB. conjunction
@@ -181,11 +183,11 @@ NB.   temporarily use dissect to sort of represent the postmortem process
 wrapeval=: {{
 NB. for interactive/dev use - prefer using dyad from code
   echo }."1}:"1}.}:":'wrapeval locale ';' ',;wraplocale=: cocreate''
+  Zn__wraplocale=: 0
   coinsert__wraplocale 'base'
   wraplocale wrapeval y
 :
   echo; wraplocale=. x
-  Zn__wraplocale=: 0
   echo;tokes=. tokenize y
   mask=. tokes e.'=:';'=.'
   names=. _1<:nc tokes
@@ -195,7 +197,7 @@ NB. for interactive/dev use - prefer using dyad from code
     varmask=. 1 (i<.I. tokes e. name)} varmask
   end.
   echo wrapmask=. -.varmask NB. token names which must be predefined
-  echo Zsentence__wraplocale=: ;wrapmask wrapA__wraplocale@]^:["0 tokes
+  echo Zsentence__wraplocale=: ;:inv wrapmask wrapA__wraplocale@]^:["0 tokes
   do__wraplocale 'Zresult=: ',Zsentence__wraplocale
 }}
 
