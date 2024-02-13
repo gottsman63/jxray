@@ -187,8 +187,8 @@ NB. for interactive/dev use - prefer using dyad from code
   coinsert__wraplocale 'base'
   wraplocale wrapeval y
 :
-  echo; wraplocale=. x
-  echo;tokes=. tokenize y
+  wraplocale=. x
+  tokes=. tokenize y
   mask=. tokes e.'=:';'=.'
   names=. _1<:nc tokes
   varmask=. names*}.mask,0
@@ -196,8 +196,8 @@ NB. for interactive/dev use - prefer using dyad from code
     name=. i{tokes
     varmask=. 1 (i<.I. tokes e. name)} varmask
   end.
-  echo wrapmask=. -.varmask NB. token names which must be predefined
-  echo Zsentence__wraplocale=: ;:inv wrapmask wrapA__wraplocale@]^:["0 tokes
+  wrapmask=. -.varmask NB. token names which must be predefined
+  Zsentence__wraplocale=: ;:inv wrapmask wrapA__wraplocale@]^:["0 tokes
   do__wraplocale 'Zresult=: ',Zsentence__wraplocale
 }}
 
