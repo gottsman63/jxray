@@ -2,7 +2,10 @@ cocurrent'watchj' NB. for development (wouldn't need for prod)
 
 NB. we'll be generating a sequence of related names
 NB. this base id will be used to distinguish different sets of names
-genid=: {{ y,":Zn__x=: Zn__x+1}}
+genid=: {{
+  Zparents=: Zparents__x, y
+  ":Zn__x=: Zn__x+1
+}}
 
 NB. get the name given an id (from genid - maybe appended to something else)
 wrapnm=: {{ 'Z',y }} NB. y: id
@@ -40,6 +43,27 @@ fiximplementation=: {{
   ;fix ,&suffix each@]^:["0 tokens
 }}
 
+getdisp=: {{
+  r=. ''
+  for_token.tokenize y do.
+    token=. ;token
+    if. 'Z'={.token do.
+      if. '_'={:token do.
+        nm=. ;coname''
+        sfx=. '_',nm,'_'
+        if. sfx-: (-#sfx){.token do.
+          display=. ".rplc&(sfx;'DISP_',nm,'_') token
+          if. #display do.
+            r=. r, display continue.
+          end.
+        end.
+      end.
+    end.
+    r=. r, token
+  end.
+  r
+}}
+
 NB. given a template for wrapping a definition,
 NB.   and the text of the definition,
 NB.   and the id for the constructed names to use
@@ -49,15 +73,15 @@ fillinblanks=: {{
   LOCALE=. m
   TEMPLATE=. n
   IMPLEMENTATION=. LOCALE fiximplementation ;y
-  DISPLAYTEXT=. quote;y
+  DISPLAYTEXT=. getdisp;y
   SELF=. wrapnm ID
   for_suffix.>;:'HAS HIST TIME0 TIME1 X Y' do.
     (SELF,suffix)=: '' NB. for future use by wrapper being created
   end.
+  (SELF,'DISP')=: DISPLAYTEXT
   PROLOG=. {{)n
-    SELFDISP=: DISPLAYTEXT
-    SELFTIME0=: SELFTIME0,gettime	''
-}} rplc 'SELF';SELF;'DISPLAYTEXT';DISPLAYTEXT
+    SELFTIME0=: SELFTIME0,gettime''
+}} rplc 'SELF';SELF
   PROLOG3=. PROLOG,{{)n
   'SELFY';SELFY=:SELFY,<y
 }} rplc 'SELF';SELF
@@ -126,9 +150,9 @@ wrap1=: {{
     T=. name2lrep 't'
     select. nc<'t'
       case. 0 do. EPILOG t return.
-      case. 1 do. name=. 'IDa' wrap1 T
-      case. 2 do. name=. 'IDc' wrap2 T
-      case. 3 do. name=. 'IDv' wrap3 T
+      case. 1 do. name=. ID wrap1 T
+      case. 2 do. name=. ID wrap2 T
+      case. 3 do. name=. ID wrap3 T
     end.
     SELFHAS=: SELFHAS,<name NB. remember name(s) of delegate(s)
     name~
@@ -149,9 +173,9 @@ wrap2=: {{
     T=. name2lrep 't'
     select. nc<'t'
       case. 0 do. EPILOG t return.
-      case. 1 do. name=. 'IDa' wrap1 T
-      case. 2 do. name=. 'IDc' wrap2 T
-      case. 3 do. name=. 'IDv' wrap3 T
+      case. 1 do. name=. ID wrap1 T
+      case. 2 do. name=. ID wrap2 T
+      case. 3 do. name=. ID wrap3 T
     end.
     SELFHAS=: SELFHAS,<name NB. remember name(s) of delegate(s)
     name~
@@ -166,9 +190,9 @@ wrapA=: {{
   suffix=. '_',(;coname''),'_'
   if. suffix-:(#suffix){.y do. y return. end.
   select. ncp y
-    case. 1 do. <'' wrap1;y NB. adverb
-    case. 2 do. <'' wrap2;y NB. conjunction
-    case. 3 do. <'' wrap3;y NB. verb
+    case. 1 do. <0 wrap1;y NB. adverb
+    case. 2 do. <0 wrap2;y NB. conjunction
+    case. 3 do. <0 wrap3;y NB. verb
     case.   do. y
   end.
 }}
@@ -183,7 +207,8 @@ NB.   temporarily use dissect to sort of represent the postmortem process
 wrapeval=: {{
 NB. for interactive/dev use - prefer using dyad from code
   echo }."1}:"1}.}:":'wrapeval locale ';' ',;wraplocale=: cocreate''
-  Zn__wraplocale=: 0
+  Zparents__wraplocale=: ,0
+  Zn__wraplocale=: 1
   coinsert__wraplocale 'base'
   wraplocale wrapeval y
 :

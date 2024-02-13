@@ -28,7 +28,8 @@ watch=: {{)v
   NB. u. resolves in caller's locale
   u=. coname
   userlocale__w=: Zuserlocale__w=: u.'' NB. userlocale__w for backwards compatibility with jtrace
-  Zn__w=: 0
+  Zparents__w=: ,0
+  Zn__w=: 1
   Zstack__w=: 4 2$mark;''
   Ztokens__w=: tokenize Zsentence__w=: y
   coinsert__w 'watchj jtrace'
