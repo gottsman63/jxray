@@ -20,10 +20,16 @@ NB.   show_plan
 
 NB. may want to separate out each of these lines into separate progress mechanisms.
 execute=: {{
+  Zold_indent=: 0
   show_pattern Zndx=. 1 1 1 1 i.~ * PTpatterns bwand"1 ,>4 1{.Zstack
   if. Zndx <#PTpatterns do.
     show_mask Zmask=. Zndx{PTsubj
     (coname'') wrapeval build_subexpression Zndx
+    if. Zold_indent do.
+      show_indent 1
+      Zold_indent=. 0
+    end.
+    show_a 5!:5<'Zresult'
     update_stack Zmask
   else.
     0

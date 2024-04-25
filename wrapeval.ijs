@@ -80,6 +80,7 @@ fillinblanks=: {{
   end.
   (SELF,'DISP')=: DISPLAYTEXT
   PROLOG=. {{)n
+    Zindent=: Zindent+1
     SELFTIME0=: SELFTIME0,gettime''
 }} rplc 'SELF';SELF
   PROLOG3=. PROLOG,{{)n
@@ -89,11 +90,12 @@ fillinblanks=: {{
   'SELFX'; SELFX=: SELFX,<x
 }} rplc 'SELF';SELF
   EPILOG=: LF-.~{{)n
+    if. Zold_indent > Zindent=: Zindent-1 do. show_indent Zindent end.
     {{y[SELFTIME1=: SELFTIME1,gettime''[SELFHIST=: SELFHIST,<y}}
 }} rplc 'SELF';SELF
   subst=. 'SELF';SELF;'ID';ID;'IMPLEMENTATION';IMPLEMENTATION
   subst=. subst,'PROLOG4';PROLOG4;'PROLOG3';PROLOG3;'PROLOG';PROLOG
-  subst=. subst,'EPILOG';EPILOG
+  subst=. subst,'EPILOG';EPILOG;'DISPLAYTEXT';quote DISPLAYTEXT
   TEMPLATE rplc subst
 }}
 
@@ -120,16 +122,28 @@ wrap3=: {{)d
   rank=. u b. 0
   sep=: ':',LF
   Def=: id Zuserlocale fillinblanks {{)n
+    if. show_indent Zindent do.
+      show_padded DISPLAYTEXT;<y
+    end.
     PROLOG3
     EPILOG IMPLEMENTATION y
 :
+    if. show_indent Zindent do.
+      show_padded x;DISPLAYTEXT;<y
+    end.
     PROLOG4
     EPILOG x IMPLEMENTATION y
 }} y
   iDef=: idinv Zuserlocale fillinblanks {{)n
+    if. show_indent Zindent do.
+      show_padded DISPLAYTEXT;<y
+    end.
     PROLOG3
     EPILOG IMPLEMENTATION y
 :
+    if. show_indent Zindent do.
+      show_padded x;DISPLAYTEXT;<y
+    end.
     PROLOG4
     EPILOG x IMPLEMENTATION y
 }} yinv
@@ -145,6 +159,9 @@ wrap1=: {{
   wraplocale=. coname''
   nm=. wrapnm id=. wraplocale genid x
   (nm)=: 1 :(id Zuserlocale fillinblanks {{)n
+    if. show_indent Zindent do.
+      show_padded (5!:6<'u');DISPLAYTEXT
+    end.    
     PROLOG
     t=. u IMPLEMENTATION
     T=. name2lrep 't'
@@ -169,6 +186,9 @@ wrap2=: {{
   nm=. wrapnm id=. wraplocale genid x
   (nm)=: 2 :(id Zuserlocale fillinblanks {{)n
     PROLOG
+    if. show_indent Zindent do.
+      show_padded (5!:6<'u');DISPLAYTEXT;5!:6<'v'
+    end.    
     t=. u IMPLEMENTATION v
     T=. name2lrep 't'
     select. nc<'t'

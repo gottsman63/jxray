@@ -26,13 +26,14 @@ watch=: {{)v
   NB. use 'Z' prefix for (temp) internals (so they stand out when reading)
   w=. cocreate ''
   NB. u. resolves in caller's locale
-  u=. coname
+  u=. coname NB. so, now, u. gives us name of caller's locale
   userlocale__w=: Zuserlocale__w=: u.'' NB. userlocale__w for backwards compatibility with jtrace
-  Zparents__w=: ,0
-  Zn__w=: 1
-  Zstack__w=: 4 2$mark;''
-  Ztokens__w=: tokenize Zsentence__w=: y
-  coinsert__w 'watchj jtrace'
+  Zparents__w=: ,0  NB. probably can delete this
+  Zn__w=: 1         NB. initialize id generator
+  Zstack__w=: 4 2$mark;''  NB. empty j emulation stackstack
+  Zindent__w=: 0  NB. for showing nested evaluations
+  Ztokens__w=: tokenize Zsentence__w=: y NB. unparsed sentence
+  coinsert__w 'watchj jtrace'  NB. delegates
   Zqueue__w=: (mark;0;''),(class__w&.>,. (2 <\ 0 +/\@, #@>) ,.prespace__w&.>) Ztokens__w
   while. EMPTY-:nextstep__w'' do. end. NB. plan on eventually replacing this line with a timer/ui event
 }}
