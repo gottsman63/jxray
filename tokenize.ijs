@@ -103,6 +103,7 @@ tokenize=: token {{
   stack=. EMPTY
   r=. i.prevec=. start=. j=. 0
   while. j<:#y do.
+    assert. (2>#r) +. -. ('';'') -: _2{.r 
     if. j=#y do.
       s=. ''
     else.
